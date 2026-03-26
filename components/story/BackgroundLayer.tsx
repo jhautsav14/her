@@ -43,9 +43,9 @@ export function BackgroundLayer({
 
       {/* 🎬 CENTER VIDEO (NO BLUR AT ALL) */}
       <motion.div
-        className="relative z-50 w-[95%] max-w-2xl aspect-video rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black flex items-center justify-center"
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+        className="absolute top-30 left-0 right-0 mx-auto z-50 w-[95%] max-w-2xl aspect-video rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black flex items-center justify-center"
+        initial={{ scale: 0.95, opacity: 0, y: -20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         {isVideo ? (
@@ -64,6 +64,15 @@ export function BackgroundLayer({
             style={{ backgroundImage: `url(${backgroundImage})` }}
           />
         )}
+
+        {/* ❤️ STACKED HEART EMOJI */}
+        <motion.div 
+          className="absolute bottom-0 right-0 text-3xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] z-10"
+          
+        >
+          🥰
+        </motion.div>
+
       </motion.div>
     </motion.div>
   )
