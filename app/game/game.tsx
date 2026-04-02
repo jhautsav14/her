@@ -114,22 +114,7 @@ const NoCapGameUI = ({
               </div>
             </div>
 
-            {/* SLIDER CONTROL */}
-            <div className={`w-full max-w-lg mt-4 ${gameState !== "playing" && "opacity-40 pointer-events-none transition-opacity duration-500"}`}>
-              <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 relative overflow-hidden">
-                <div className="flex justify-between mb-4 relative z-10">
-                  <span className="text-gray-400 text-sm font-medium uppercase tracking-wider">Slide to Guess</span>
-                  <span className="text-white font-black bg-gray-800 px-4 py-1.5 rounded-lg border border-gray-700">
-                    {guessStart}% - {guessEnd}%
-                  </span>
-                </div>
-                <input
-                  type="range" min={Math.floor(windowSize / 2)} max={100 - (windowSize - Math.floor(windowSize / 2))} value={center}
-                  onChange={(e) => setCenter(Number(e.target.value))}
-                  className="w-full accent-green-500 h-3 bg-gray-700 rounded-lg appearance-none cursor-pointer relative z-10"
-                />
-              </div>
-            </div>
+            
 
             {/* VISUALIZER TUBE */}
 <div className="relative w-full max-w-2xl h-40 mt-6">
@@ -179,16 +164,66 @@ const NoCapGameUI = ({
       </div>
     );
   })}
+  {/* START BUBBLE */}
+<div
+  className="absolute top-1/2 z-30"
+  style={{
+    left: `${guessStart}%`,
+    transform: "translate(-50%, -50%)",
+  }}
+>
+  <div className="flex flex-col items-center">
+
+    {/* BUBBLE */}
+    <div className="px-3 py-1 rounded-full 
+                    bg-gradient-to-r from-emerald-400 to-green-500
+                    text-black text-sm font-bold 
+                    shadow-[0_0_15px_rgba(74,222,128,0.9)]
+                    border border-white/20">
+      {guessStart}
+    </div>
+
+    {/* POINTER TRIANGLE */}
+    <div className="w-3 h-3 bg-green-400 rotate-45 mt-[-6px]" />
+
+  </div>
+</div>
+
+
+{/* END BUBBLE */}
+<div
+  className="absolute top-1/2 z-30"
+  style={{
+    left: `${guessEnd}%`,
+    transform: "translate(-50%, -50%)",
+  }}
+>
+  <div className="flex flex-col items-center">
+
+    {/* BUBBLE */}
+    <div className="px-3 py-1 rounded-full 
+                    bg-gradient-to-r from-green-500 to-emerald-600
+                    text-black text-sm font-bold 
+                    shadow-[0_0_15px_rgba(34,197,94,0.9)]
+                    border border-white/20">
+      {guessEnd}
+    </div>
+
+    {/* POINTER TRIANGLE */}
+    <div className="w-3 h-3 bg-green-500 rotate-45 mt-[-6px]" />
+
+  </div>
+</div>
+
 
   {/* PLAYER WINDOW */}
-  <motion.div
-    layout
-    className="absolute top-1/2 -translate-y-1/2 h-6 
-               bg-gradient-to-r from-emerald-400/40 to-green-500/40
-               rounded-full border border-emerald-300
-               shadow-[0_0_25px_rgba(74,222,128,0.6)] backdrop-blur-sm"
-    style={{ left: `${guessStart}%`, width: `${guessEnd - guessStart}%` }}
-  />
+ <motion.div
+  className="absolute top-1/2 -translate-y-1/2 h-6 
+             bg-gradient-to-r from-emerald-400/40 to-green-500/40
+             rounded-full border border-emerald-300
+             shadow-[0_0_25px_rgba(74,222,128,0.6)] backdrop-blur-sm"
+  style={{ left: `${guessStart}%`, width: `${guessEnd - guessStart}%` }}
+/>
 
   {/* THE REVEALING ORB */}
   <motion.div
@@ -304,15 +339,51 @@ const NoCapGameUI = ({
               );
             })}
           </div>
-        </div>
-      )}
+          {/* SLIDER CONTROL (MOVED HERE) */}
+<div className={`w-full mt-4 ${gameState !== "playing" && "opacity-40 pointer-events-none transition-opacity duration-500"}`}>
+  <div className="bg-gray-800 p-4 rounded-2xl border border-gray-700 relative overflow-hidden">
+    
+    <div className="flex justify-between mb-3">
+      <span className="text-gray-400 text-xs font-medium uppercase">
+        Slide to Guess
+      </span>
+      <span className="text-white font-bold bg-gray-900 px-3 py-1 rounded-lg border border-gray-700 text-xs">
+        {guessStart}% - {guessEnd}%
+      </span>
     </div>
+
+    <input
+      type="range"
+      min={Math.floor(windowSize / 2)}
+      max={100 - (windowSize - Math.floor(windowSize / 2))}
+      value={center}
+      onChange={(e) => setCenter(Number(e.target.value))}
+      className="w-full accent-green-500 h-2 bg-gray-700 rounded-lg cursor-pointer"
+    />
+  </div>
+</div>
+        </div>
+        
+      )}
+      
+    </div>
+
+    
   );
 };
 
 // ==========================================
 // 2. LOGIC / CONTAINER COMPONENT
 // ==========================================
+
+function shuffleArray(array: any[]) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 export default function NoCapGame() {
   const [level, setLevel] = useState(0);
@@ -322,22 +393,29 @@ export default function NoCapGame() {
   // Game Inputs
   const [center, setCenter] = useState(50);
   const [gameData, setGameData] = useState<{ q: string; a: number }[]>([]);
+  const [selectedQuestions, setSelectedQuestions] = useState<{ q: string; a: number }[]>([]);
 
   useEffect(() => {
-    fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQFlTp2D6oFQPSXU0wfVOAiN6pFxFpLZKxa14ePlwbtDMgAAw1hrsxOj03KT4URN93kLnYL10w4buw6/pub?output=csv")
-      .then(res => res.text())
-      .then(csv => {
-        const rows = csv.split("\n").slice(1); // skip header
-        const parsed = rows.map(row => {
-          const [q, a] = row.split(",");
-          return {
-            q: q.replace(/"/g, ""),
-            a: Number(a)
-          };
-        });
-        setGameData(parsed);
+  fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQFlTp2D6oFQPSXU0wfVOAiN6pFxFpLZKxa14ePlwbtDMgAAw1hrsxOj03KT4URN93kLnYL10w4buw6/pub?output=csv")
+    .then(res => res.text())
+    .then(csv => {
+      const rows = csv.split("\n").slice(1);
+
+      const parsed = rows.map(row => {
+        const [q, a] = row.split(",");
+        return {
+          q: q.replace(/"/g, ""),
+          a: Number(a)
+        };
       });
-  }, []);
+
+      setGameData(parsed);
+
+      // 🎯 SHUFFLE + PICK 5
+      const shuffled = shuffleArray(parsed);
+setSelectedQuestions(shuffled.slice(0, 5));
+    });
+}, []);
   
   // Animation States
   const orbControls = useAnimation(); 
@@ -346,11 +424,13 @@ export default function NoCapGame() {
   const [offBy, setOffBy] = useState(0);
   const [isWin, setIsWin] = useState(false);
 
-  const currentQ = gameData[level];
+  const currentQ = selectedQuestions[level];
   const windowSize = WINDOW_SIZES[level] || 10;
   const halfWindow = Math.floor(windowSize / 2);
   const guessStart = Math.max(0, center - halfWindow);
   const guessEnd = Math.min(100, guessStart + windowSize);
+
+  
 
   // Reset center when level changes to keep it in bounds
   useEffect(() => {
@@ -452,17 +532,20 @@ export default function NoCapGame() {
   };
 
   const resetGame = () => {
-    setLevel(0);
-    setCash(0);
-    setRevealed("?");
-    setCenter(50);
-    orbControls.set({ left: "0%" });
-    setGameState("playing");
-  };
+  const shuffled = shuffleArray(gameData);
+setSelectedQuestions(shuffled.slice(0, 5));
 
-  if (gameData.length === 0) {
-    return <div>Loading questions...</div>;
-  }
+  setLevel(0);
+  setCash(0);
+  setRevealed("?");
+  setCenter(50);
+  orbControls.set({ left: "0%" });
+  setGameState("playing");
+};
+
+  if (selectedQuestions.length === 0) {
+  return <div>Loading questions...</div>;
+}
 
   return (
     <NoCapGameUI 
