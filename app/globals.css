@@ -221,3 +221,29 @@
     overflow: hidden;
   }
 }
+
+@keyframes shine {
+  0% {
+    background-position: -250% center;
+  }
+
+  100% {
+    background-position: 250% center;
+  }
+}
+
+.animate-shine {
+  background-image: linear-gradient(110deg,
+      #fff 0%,
+      #fef9c3 25%,
+      #facc15 45%,
+      #ffffff 50%,
+      #facc15 55%,
+      #fef9c3 75%,
+      #fff 100%);
+
+  background-size: 250% auto;
+  animation: shine 7s ease-in-out infinite;
+
+  filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.35));
+}
