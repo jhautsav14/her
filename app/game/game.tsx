@@ -35,9 +35,7 @@ const NoCapGameUI = ({
   orbControls, handleReveal, nextLevel, resetGame
 }: NoCapGameUIProps) => {
   return (
-   <div className="h-screen overflow-y-auto bg-gray-950 text-white 
-                flex flex-col lg:flex-row items-center lg:items-start 
-                justify-start gap-6 px-4 py-6 font-sans relative">
+    <div className="min-h-screen bg-gray-950 text-white flex flex-col lg:flex-row items-center justify-center gap-8 px-4 py-8 font-sans overflow-hidden relative">
       
       {/* RESET BUTTON (Top Right) */}
       <button 
@@ -60,7 +58,7 @@ const NoCapGameUI = ({
       )}
 
       {/* LEFT SIDE: MAIN GAME AREA */}
-      <div className="flex-1 flex flex-col items-center gap-6 w-full max-w-3xl z-10">
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 w-full max-w-3xl z-10">
         
         {/* TITLE */}
         <div className="flex gap-3 items-center justify-center">
@@ -224,8 +222,7 @@ const NoCapGameUI = ({
 </div>
 
             {/* ACTION BUTTONS & RESULTS */}
-            <div className="sticky bottom-0 w-full flex justify-center py-4 
-                bg-gradient-to-t from-gray-950 via-gray-950/80 to-transparent z-20">
+            <div className="h-28 flex flex-col items-center justify-center w-full mt-2">
               {gameState === "playing" && (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -269,10 +266,7 @@ const NoCapGameUI = ({
 
       {/* RIGHT SIDE: STATUS LADDER TABLE */}
       {gameState !== "gameover" && (
-        <div className="w-full lg:w-72 max-h-[80vh] overflow-y-auto 
-                lg:sticky lg:top-6
-                bg-gray-900 border-2 border-gray-800 rounded-3xl 
-                p-6 flex flex-col z-10 shadow-xl">
+        <div className="w-full lg:w-72 bg-gray-900 border-2 border-gray-800 rounded-3xl p-6 flex flex-col z-10 shadow-xl">
           <div className="text-center mb-6">
             <h3 className="text-gray-400 text-xs uppercase tracking-widest font-bold mb-1">Total Cash</h3>
             <div className="text-5xl font-black text-green-400">₹{cash}</div>
