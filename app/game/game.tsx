@@ -224,7 +224,8 @@ const NoCapGameUI = ({
 </div>
 
             {/* ACTION BUTTONS & RESULTS */}
-            <div className="h-28 flex flex-col items-center justify-center w-full mt-2">
+            <div className="sticky bottom-0 w-full flex justify-center py-4 
+                bg-gradient-to-t from-gray-950 via-gray-950/80 to-transparent z-20">
               {gameState === "playing" && (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
